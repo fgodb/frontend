@@ -17,7 +17,6 @@ class ServantList extends Component {
       .then(result => result.json())
       .then(
         (result) => {
-          console.log(result);
           this.setState({
             isLoaded: true,
             servants: result.servants
@@ -25,7 +24,6 @@ class ServantList extends Component {
         },
 
         (error) => {
-          console.log(error);
           this.setState({
             isLoaded: false,
             error: error
@@ -41,11 +39,24 @@ class ServantList extends Component {
     } else if (!isLoaded) {
       return <div>Loading, please wait.</div>
     } else {
-      console.log(servants[0]);
       return(servants.map((servant, index) => (
-        <Servant key={index} name={servant["name"]} class={servant.class} />
+        <Servant key={index} name={servant["name"]} class={servant.class} commandlist={servant.commandlist} />
       )));
     }
+  }
+}
+
+class CommandCard extends Component {
+  getStyle(command) {
+    return {
+      "A": "arts-blue",
+      "Q": "quick-green",
+      "B": "buster-red"
+    }[command]
+  }
+
+  render() {
+    return <span className={this.getStyle(this.props.command)}>{this.props.command}</span>
   }
 }
 
@@ -55,6 +66,13 @@ class Servant extends Component {
       <div className="servant">
         <h1>{this.props.name}</h1>
         <h2>{this.props.class}</h2>
+          {
+            this.props.commandlist.map(
+              (command, index) => {
+                return <CommandCard key={index} command={command} />
+              }
+            )
+          }
       </div>
     );
   }
